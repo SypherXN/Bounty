@@ -422,8 +422,8 @@ public class PlayerUtil {
      */
     public static Boolean onPlaceCooldown(OfflinePlayer p) {
 
-        if((DataUtil.getDataLong(p, "PlaceTime") / 1000) > DataUtil.placeCooldown) return false;
-        return true;
+        if((DataUtil.getDataLong(p, "PlaceTime") / 1000) > DataUtil.placeCooldown) return true;
+        return false;
 
     }
 

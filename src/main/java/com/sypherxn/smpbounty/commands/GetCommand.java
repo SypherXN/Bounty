@@ -2,6 +2,7 @@ package com.sypherxn.smpbounty.commands;
 
 import com.sypherxn.smpbounty.SMPBounty;
 import com.sypherxn.smpbounty.util.ChatUtil;
+import com.sypherxn.smpbounty.util.PlayerListUtil;
 import com.sypherxn.smpbounty.util.PlayerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -26,7 +27,7 @@ public class GetCommand extends SubCommand {
 
         }
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+        OfflinePlayer target = Bukkit.getOfflinePlayer(PlayerListUtil.getUUID(args[1]));
 
         if(target == null) { 
 

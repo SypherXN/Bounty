@@ -5,10 +5,7 @@ import com.sypherxn.smpbounty.commands.CollectCommand;
 import com.sypherxn.smpbounty.commands.PlaceCommand;
 import com.sypherxn.smpbounty.commands.SubCommand;
 import com.sypherxn.smpbounty.gui.GUI;
-import com.sypherxn.smpbounty.util.ChatUtil;
-import com.sypherxn.smpbounty.util.FileUtil;
-import com.sypherxn.smpbounty.util.PlayerUtil;
-import com.sypherxn.smpbounty.util.StatsUtil;
+import com.sypherxn.smpbounty.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +34,7 @@ public class Listeners implements Listener {
     public static void onPlayerJoin(PlayerLoginEvent e) {
 
         new FileUtil(e.getPlayer()).create();
+        PlayerListUtil.updateEntry(e.getPlayer().getUniqueId());
 
     }
 
@@ -74,7 +73,7 @@ public class Listeners implements Listener {
                     .forEach(items::add);
 
             String targetName = e.getView().getTitle().substring(18);
-            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
+            OfflinePlayer target = Bukkit.getOfflinePlayer(PlayerListUtil.getUUID(targetName));
             UUID targetUUID = target.getUniqueId();
 
             PlayerUtil.setRewardItems(target, items);
@@ -135,6 +134,9 @@ public class Listeners implements Listener {
     @EventHandler
     public void viewClick(InventoryClickEvent e) {
 
+        if(e.getCurrentItem() == null) { return; }
+        if(!e.getClickedInventory().getType().equals(InventoryType.CHEST)) { return; }
+
         if(e.getView().getTitle().length() < 16) { return; }
 
         String viewCheck = e.getView().getTitle().substring(0,16);
@@ -172,22 +174,31 @@ public class Listeners implements Listener {
     @EventHandler
     public void listToViewClick(InventoryClickEvent e) {
 
+        if(e.getCurrentItem() == null) { return; }
+        if(!e.getClickedInventory().getType().equals(InventoryType.CHEST)) { return; }
+
         String listCheck = e.getView().getTitle();
         ItemStack clickedItem = e.getCurrentItem();
 
         String name = clickedItem.getItemMeta().getDisplayName();
         Player p = (Player) e.getWhoClicked();
-        OfflinePlayer target = Bukkit.getOfflinePlayer(name);
+
+        if(listCheck.contains("Bounty List:") &&
+            e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
+
+            e.setCancelled(true);
+
+            Inventory inv = GUI.getMainView(p);
+            p.openInventory(inv);
+            return;
+
+        }
+
+        if(PlayerListUtil.getUUID(name) == null) { return; }
+
+        OfflinePlayer target = Bukkit.getOfflinePlayer(PlayerListUtil.getUUID(name));
 
         if(listCheck.equalsIgnoreCase(ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty List: View")) {
-
-            if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
-
-                Inventory inv = GUI.getMainView(p);
-                p.openInventory(inv);
-                return;
-
-            }
 
             Inventory bountyView = GUI.getRewardView(target);
             p.openInventory(bountyView);
@@ -195,27 +206,11 @@ public class Listeners implements Listener {
 
         } else if(listCheck.equalsIgnoreCase(ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty List: Place")) {
 
-            if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
-
-                Inventory inv = GUI.getMainView(p);
-                p.openInventory(inv);
-                return;
-
-            }
-
             e.setCancelled(true);
             SubCommand cmd = new PlaceCommand();
             cmd.onCommand(p, new String[]{"", target.getName()});
 
         } else if(listCheck.equalsIgnoreCase(ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty List: Active")) {
-
-            if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
-
-                Inventory inv = GUI.getMainView(p);
-                p.openInventory(inv);
-                return;
-
-            }
 
             e.setCancelled(true);
             Inventory activeView = GUI.getActiveRewardView(target);
@@ -227,6 +222,9 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void mainGUIClick(InventoryClickEvent e) {
+
+        if(e.getCurrentItem() == null) { return; }
+        if(!e.getClickedInventory().getType().equals(InventoryType.CHEST)) { return; }
 
         if(e.getView().getTitle().length() < 17) { return; }
 
@@ -288,7 +286,7 @@ public class Listeners implements Listener {
                 ChatUtil.sendBroadcast(killer.getName() + " has killed " + death.getName() + " and has collected their reward from " + bountyPlacer.getName());
 
                 ArrayList<ItemStack> reward = PlayerUtil.getRewardItems(death);
-                PlayerUtil.setCollectItems(killer, reward);
+                PlayerUtil.addCollectItems(killer, reward);
                 PlayerUtil.resetHunting(killer);
                 StatsUtil.incrementBountyKills(killer);
                 ChatUtil.sendMessage(killer, "Use \"/bounty collect\" to retrieve your reward items!");
@@ -313,7 +311,7 @@ public class Listeners implements Listener {
                 ArrayList<ItemStack> single = new ArrayList<>();
                 single.add(playerSkull);
 
-                PlayerUtil.setCollectItems(bountyPlacer, single);
+                PlayerUtil.addCollectItems(bountyPlacer, single);
 
                 return;
 
@@ -331,7 +329,7 @@ public class Listeners implements Listener {
                 StatsUtil.incrementBountyFails(death);
 
                 ArrayList<ItemStack> reward = PlayerUtil.getRewardItems(killer);
-                PlayerUtil.setCollectItems(killer, reward);
+                PlayerUtil.addCollectItems(killer, reward);
                 ChatUtil.sendMessage(killer, "Use \"/bounty collect\" to retrieve your reward items!");
                 PlayerUtil.resetTargeting(bountyPlacer);
 

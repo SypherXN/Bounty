@@ -41,13 +41,13 @@ public class CancelCommand extends SubCommand {
 
         //Update information for the player running the command
         PlayerUtil.resetTargeting(p);
-        PlayerUtil.setCollectItems(p, PlayerUtil.getRewardItems(target));
+        PlayerUtil.addCollectItems(p, PlayerUtil.getRewardItems(target));
         ChatUtil.sendMessage(p, "You have successfully removed the bounty off of " + target.getName());
         ChatUtil.sendMessage(p, "Your bounty has been placed into your /bounty collect");
 
         //Update information for the player being hunted
-        PDCUtil.clearBountyPlacer(target);
-        PDCUtil.clearRewardItems(target);
+        PlayerUtil.resetBountyPlacer(target);
+        PlayerUtil.resetRewardItems(target);
         ChatUtil.sendMessage(target, p.getName() + " has removed their bounty on you");
 
     }

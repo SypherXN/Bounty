@@ -1,10 +1,12 @@
 package com.sypherxn.smpbounty.gui;
 
+import com.sypherxn.smpbounty.util.ChatUtil;
 import com.sypherxn.smpbounty.util.PlayerUtil;
 import com.sypherxn.smpbounty.util.StatsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -13,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // Why is this deprecated? Because this is accidentally paper and not spigot. Oops, no regrets!
 @SuppressWarnings("deprecation")
@@ -71,9 +74,9 @@ public class GUI {
 
     }
 
-    public static Inventory getCollectView(Player p) {
+    public static Inventory getCollectView(OfflinePlayer p) {
 
-        Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty Collect: " + p.getName());
+        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty Collect: " + p.getName());
         ArrayList<ItemStack> items = PlayerUtil.getCollectItems(p);
 
         items.stream()
@@ -85,24 +88,24 @@ public class GUI {
 
     public static Inventory getListView(String type) {
 
-        ArrayList<Player> onlinePlayerList = new ArrayList<>(Bukkit.getOnlinePlayers());
+        ArrayList<OfflinePlayer> playerList = new ArrayList<OfflinePlayer>(Arrays.asList(Bukkit.getOfflinePlayers()));
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty List: " + type);
 
         switch(type) {
 
             case "Place":
 
-                for(int i = 0; i < onlinePlayerList.size(); i++) {
+                for(int i = 0; i < playerList.size(); i++) {
 
-                    Player c = onlinePlayerList.get(i);
+                    OfflinePlayer c = playerList.get(i);
                     if(PlayerUtil.isEnabled(c) && !PlayerUtil.hasBountyPlacer(c) && !PlayerUtil.hasShield(c)) {
 
                         ItemStack playerSkull = new ItemStack(Material.PLAYER_HEAD, 1);
 
                         ArrayList<String> desc = new ArrayList<>();
                         SkullMeta meta = (SkullMeta) playerSkull.getItemMeta();
-                        meta.setOwningPlayer(onlinePlayerList.get(i));
-                        meta.setDisplayName(onlinePlayerList.get(i).getName());
+                        meta.setOwningPlayer(playerList.get(i));
+                        meta.setDisplayName(playerList.get(i).getName());
                         desc.add(ChatColor.GOLD + "Click to place bounty");
                         meta.setLore(desc);
 
@@ -118,19 +121,19 @@ public class GUI {
 
             case "View":
 
-                for(int i = 0; i < onlinePlayerList.size(); i++) {
+                for(int i = 0; i < playerList.size(); i++) {
 
-                    Player c = onlinePlayerList.get(i);
+                    OfflinePlayer c = playerList.get(i);
                     if(PlayerUtil.isEnabled(c) && PlayerUtil.hasBountyPlacer(c) && !PlayerUtil.hasBountyHunter(c)) {
 
                         ItemStack playerSkull = new ItemStack(Material.PLAYER_HEAD, 1);
 
                         ArrayList<String> desc = new ArrayList<>();
                         SkullMeta meta = (SkullMeta) playerSkull.getItemMeta();
-                        meta.setOwningPlayer(onlinePlayerList.get(i));
-                        meta.setDisplayName(onlinePlayerList.get(i).getName());
+                        meta.setOwningPlayer(playerList.get(i));
+                        meta.setDisplayName(playerList.get(i).getName());
                         desc.add(ChatColor.GOLD + "Click to view bounty");
-                        desc.add(ChatColor.AQUA + "Bounty Placer: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyPlacer(onlinePlayerList.get(i))).getName());
+                        desc.add(ChatColor.AQUA + "Bounty Placer: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyPlacer(playerList.get(i))).getName());
                         meta.setLore(desc);
 
                         playerSkull.setItemMeta(meta);
@@ -145,17 +148,17 @@ public class GUI {
 
             case "Active":
 
-                for(int i = 0; i < onlinePlayerList.size(); i++) {
+                for(int i = 0; i < playerList.size(); i++) {
 
-                    Player c = onlinePlayerList.get(i);
+                    OfflinePlayer c = playerList.get(i);
                     if(PlayerUtil.isEnabled(c) && PlayerUtil.hasBountyPlacer(c) && PlayerUtil.hasBountyHunter(c)) {
 
                         ItemStack playerSkull = new ItemStack(Material.PLAYER_HEAD, 1);
 
                         ArrayList<String> desc = new ArrayList<>();
                         SkullMeta meta = (SkullMeta) playerSkull.getItemMeta();
-                        meta.setOwningPlayer(onlinePlayerList.get(i));
-                        meta.setDisplayName(onlinePlayerList.get(i).getName());
+                        meta.setOwningPlayer(playerList.get(i));
+                        meta.setDisplayName(playerList.get(i).getName());
                         desc.add(ChatColor.GOLD + "Click to view bounty");
                         desc.add(ChatColor.AQUA + "Bounty Placer: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyPlacer(c)).getName());
                         desc.add(ChatColor.AQUA + "Bounty Hunter: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyHunter(c)).getName());
@@ -188,7 +191,7 @@ public class GUI {
     }
 
     // WHEN YOU CHANGE ANY NAME, DON'T FORGET TO CHANGE THE LISTENER! ! ! ! !
-    public static Inventory getMainView(Player p) {
+    public static Inventory getMainView(OfflinePlayer p) {
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty Office");
 
         // Enable

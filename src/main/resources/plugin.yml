@@ -3,3 +3,7 @@ version: ${project.version}
 main: com.sypherxn.smpbounty.SMPBounty
 api-version: 1.16
 authors: [ SypherXN, abcdl44 ]
+commands:
+  bounty:
+    usage: /bounty
+    description: base command for SMPBounty
