@@ -1,5 +1,6 @@
 package com.sypherxn.smpbounty.listeners;
 
+import com.sypherxn.smpbounty.util.DataUtil;
 import com.sypherxn.smpbounty.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

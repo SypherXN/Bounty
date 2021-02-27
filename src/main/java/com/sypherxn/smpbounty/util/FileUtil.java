@@ -54,6 +54,7 @@ public class FileUtil {
 
                 pFile.createNewFile();
                 Bukkit.getConsoleSender().sendMessage(("File Create: " + pFile.getName()));
+                DataUtil.initializeData(p);
 
             } catch(Exception e) {
 
