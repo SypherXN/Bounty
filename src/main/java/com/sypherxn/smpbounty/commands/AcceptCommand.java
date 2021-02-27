@@ -4,6 +4,8 @@ import com.sypherxn.smpbounty.SMPBounty;
 import com.sypherxn.smpbounty.util.ChatUtil;
 import com.sypherxn.smpbounty.util.PlayerUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -19,11 +21,15 @@ public class AcceptCommand extends SubCommand {
         }
 
         String targetName = args[1];
-        Player target = PlayerUtil.getPlayer(p, targetName);
-
-        if(target == null) { return; }
-
+        OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
         UUID targetUUID = target.getUniqueId();
+
+        if(target == null) { 
+
+            ChatUtil.sendMessage(p, "Player cannot be found D:");
+            return; 
+
+        }
 
         if(!PlayerUtil.isEnabled(p)) {
             ChatUtil.sendMessage(p, "You must be bounty-enabled to accept bounties");
@@ -50,7 +56,7 @@ public class AcceptCommand extends SubCommand {
 
         //Retrieves information about players related to this command
         UUID bountyPlacerUUID = PlayerUtil.getBountyPlacer(target);
-        Player bountyPlacer = PlayerUtil.getPlayer(bountyPlacerUUID);
+        OfflinePlayer bountyPlacer = Bukkit.getOfflinePlayer(bountyPlacerUUID);
         String bountyPlacerName = bountyPlacer.getName();
 
         //Sets information for the player being targeted
@@ -66,7 +72,7 @@ public class AcceptCommand extends SubCommand {
     }
 
     @Override
-    public String name() { return SMPBounty.getPlugin().CommandManager.accept; }
+    public String name() { return SMPBounty.getPlugin().commandManager.accept; }
 
     @Override
     public String info() { return "Accept a bounty on a player to start hunting them"; }

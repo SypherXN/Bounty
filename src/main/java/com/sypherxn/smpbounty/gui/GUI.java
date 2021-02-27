@@ -14,8 +14,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 
+// Why is this deprecated? Because this is accidentally paper and not spigot. Oops, no regrets!
+@SuppressWarnings("deprecation")
 public class GUI {
-
+       
     public static Inventory getActiveRewardView(Player p) {
 
         Inventory inv = Bukkit.createInventory(null, 18, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty View: " + p.getName());
@@ -37,7 +39,7 @@ public class GUI {
         return inv;
 
     }
-
+    
     public static Inventory getRewardView(Player p) {
 
         Inventory inv = Bukkit.createInventory(null, 18, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty View: " + p.getName());
@@ -93,7 +95,7 @@ public class GUI {
                 for(int i = 0; i < onlinePlayerList.size(); i++) {
 
                     Player c = onlinePlayerList.get(i);
-                    if(PlayerUtil.isEnabled(c) && !PlayerUtil.hasBountyPlacer(c) && PlayerUtil.isOffShield(c)) {
+                    if(PlayerUtil.isEnabled(c) && !PlayerUtil.hasBountyPlacer(c) && !PlayerUtil.hasShield(c)) {
 
                         ItemStack playerSkull = new ItemStack(Material.PLAYER_HEAD, 1);
 
@@ -128,7 +130,7 @@ public class GUI {
                         meta.setOwningPlayer(onlinePlayerList.get(i));
                         meta.setDisplayName(onlinePlayerList.get(i).getName());
                         desc.add(ChatColor.GOLD + "Click to view bounty");
-                        desc.add(ChatColor.AQUA + "Bounty Placer: " + PlayerUtil.getPlayer(PlayerUtil.getBountyPlacer(onlinePlayerList.get(i))).getName());
+                        desc.add(ChatColor.AQUA + "Bounty Placer: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyPlacer(onlinePlayerList.get(i))).getName());
                         meta.setLore(desc);
 
                         playerSkull.setItemMeta(meta);
@@ -155,8 +157,8 @@ public class GUI {
                         meta.setOwningPlayer(onlinePlayerList.get(i));
                         meta.setDisplayName(onlinePlayerList.get(i).getName());
                         desc.add(ChatColor.GOLD + "Click to view bounty");
-                        desc.add(ChatColor.AQUA + "Bounty Placer: " + PlayerUtil.getPlayer(PlayerUtil.getBountyPlacer(c)).getName());
-                        desc.add(ChatColor.AQUA + "Bounty Hunter: " + PlayerUtil.getPlayer(PlayerUtil.getBountyHunter(c)).getName());
+                        desc.add(ChatColor.AQUA + "Bounty Placer: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyPlacer(c)).getName());
+                        desc.add(ChatColor.AQUA + "Bounty Hunter: " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyHunter(c)).getName());
                         meta.setLore(desc);
 
                         playerSkull.setItemMeta(meta);
@@ -266,7 +268,7 @@ public class GUI {
         ArrayList<String> collectDesc = new ArrayList<>();
         ItemMeta collectMeta = collectButton.getItemMeta();
 
-        if(PlayerUtil.getCollectItems(p).size() > 0){ //I THINK IT'S getCollectItems, but could be getRewardItems???
+        if(PlayerUtil.getCollectItems(p).size() > 0){ 
             collectButton = new ItemStack(Material.CHEST, 1);
             collectDesc.add("Collect your hard earned rewards here");
             collectMeta.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Collect Rewards");
@@ -340,7 +342,16 @@ public class GUI {
         ItemMeta shieldRemainingMeta = shieldRemainingButton.getItemMeta();
         shieldRemainingMeta.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Shield Duration Remaining: ");
 
-        shieldRemainingDesc.add("Time remaining: " + PlayerUtil.getRemainingShieldTime(p));
+        if (PlayerUtil.getRemainingShield(p).equals("You do not have a shield")) {
+
+            shieldRemainingDesc.add("No shield");
+
+        }
+        else {
+
+            shieldRemainingDesc.add("Time remaining: " + PlayerUtil.getRemainingShield(p));
+            
+        }
 
         shieldRemainingMeta.setLore(shieldRemainingDesc);
 

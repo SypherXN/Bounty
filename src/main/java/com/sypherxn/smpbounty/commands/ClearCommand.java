@@ -3,8 +3,9 @@ package com.sypherxn.smpbounty.commands;
 import com.sypherxn.smpbounty.SMPBounty;
 import com.sypherxn.smpbounty.util.ChatUtil;
 import com.sypherxn.smpbounty.util.PlayerUtil;
-import com.sypherxn.smpbounty.util.DataUtil;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 
 public class ClearCommand extends SubCommand {
 
@@ -25,15 +26,24 @@ public class ClearCommand extends SubCommand {
 
         }
 
-        DataUtil.setDataString(p, "EnableState", "Disabled");
-        DataUtil.clearPlaceTime(target);
-        PDCUtil.clearShieldTime(target);
-        PDCUtil.clearBountyPlacer(target);
-        PDCUtil.clearRewardItems(target);
-        PDCUtil.clearTargeting(target);
-        PDCUtil.clearHunting(target);
-        PDCUtil.clearCollectItems(target);
-        PDCUtil.clearBountyHunter(target);
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+
+        if(target == null) { 
+
+            ChatUtil.sendMessage(p, "Player cannot be found D:");
+            return; 
+
+        }
+
+        PlayerUtil.setEnableState(target, "Disabled");
+        PlayerUtil.resetPlaceCooldownTime(target);
+        PlayerUtil.resetShieldTime(target);
+        PlayerUtil.resetBountyPlacer(target);
+        PlayerUtil.resetRewardItems(target);
+        PlayerUtil.resetTargeting(target);
+        PlayerUtil.resetHunting(target);
+        PlayerUtil.resetCollectItems(target);
+        PlayerUtil.resetBountyHunter(target);
 
         ChatUtil.sendMessage(p, "You have successfully cleared " + target.getName() + "'s bounty data");
 
