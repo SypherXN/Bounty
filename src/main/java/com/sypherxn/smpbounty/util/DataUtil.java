@@ -14,34 +14,7 @@ public class DataUtil {
     public static UUID defaultUUID = UUID.fromString("8205c038-273f-42d9-86f9-45a909c5fbe2");
     public static long shieldDuration = 3600;
     public static long placeCooldown = 21600;
-
-    /**
-     * Initializes file data for player
-     * @param p player to initialize data for
-     */
-    public static void initializeData(OfflinePlayer p) {
-        setDataString(p, "Name", p.getName());
-        setDataUUID(p, "UUID", p.getUniqueId());
-
-        setDataString(p, "EnableState", "Disabled");
-
-        setDataUUID(p,"BountyPlacer", defaultUUID);
-        setDataUUID(p, "BountyHunter", defaultUUID);
-        setDataUUID(p, "Targeting", defaultUUID);
-        setDataUUID(p, "Hunting", defaultUUID);
-
-        setDataLong(p, "PlaceTime", 0L);
-        setDataLong(p, "ShieldTime", 0L);
-        setDataLong(p, "CombatTime", 0L);
-
-        setDataItemList(p,"RewardItems", new ArrayList<ItemStack>());
-        setDataItemList(p,"CollectItems", new ArrayList<ItemStack>());
-
-        setDataLong(p, "BountyKills", 0L);
-        setDataLong(p, "BountyFails", 0L);
-        setDataLong(p, "BountySurvived", 0L);
-
-    }
+    public static long combatDuration = 60;
 
     /**
      * Returns string from playerdata file

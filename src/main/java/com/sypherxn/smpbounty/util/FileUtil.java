@@ -2,7 +2,6 @@ package com.sypherxn.smpbounty.util;
 
 import com.sypherxn.smpbounty.SMPBounty;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,7 +53,7 @@ public class FileUtil {
 
                 pFile.createNewFile();
                 Bukkit.getConsoleSender().sendMessage(("File Create: " + pFile.getName()));
-                DataUtil.initializeData(p);
+                PlayerUtil.initializePlayer(p);
 
             } catch(Exception e) {
 
