@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+@SuppressWarnings("deprecation")
 public class AcceptCommand extends SubCommand {
 
     @Override
@@ -24,7 +25,7 @@ public class AcceptCommand extends SubCommand {
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
         UUID targetUUID = target.getUniqueId();
 
-        if(target == null) { 
+        if(target == null) {
 
             ChatUtil.sendMessage(p, "Player cannot be found D:");
             return; 
@@ -50,7 +51,7 @@ public class AcceptCommand extends SubCommand {
             ChatUtil.sendMessage(p, target.getName() + " doesn't have a bounty on them");
             return;
         } else if(PlayerUtil.hasHunting(target)) {
-            ChatUtil.sendMessage(p, target.getName() + " is already being hunted by " + PlayerUtil.getPlayer(PDCUtil.getBountyHunter(target)).getName());
+            ChatUtil.sendMessage(p, target.getName() + " is already being hunted by " + Bukkit.getOfflinePlayer(PlayerUtil.getBountyHunter(target)).getName());
             return;
         }
 

@@ -1,12 +1,12 @@
 package com.sypherxn.smpbounty.gui;
 
-import com.sypherxn.smpbounty.util.ChatUtil;
 import com.sypherxn.smpbounty.util.PlayerUtil;
 import com.sypherxn.smpbounty.util.StatsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @SuppressWarnings("deprecation")
 public class GUI {
        
-    public static Inventory getActiveRewardView(Player p) {
+    public static Inventory getActiveRewardView(OfflinePlayer p) {
 
         Inventory inv = Bukkit.createInventory(null, 18, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty View: " + p.getName());
         ArrayList<ItemStack> items = PlayerUtil.getRewardItems(p);
@@ -40,7 +40,7 @@ public class GUI {
 
     }
     
-    public static Inventory getRewardView(Player p) {
+    public static Inventory getRewardView(OfflinePlayer p) {
 
         Inventory inv = Bukkit.createInventory(null, 18, ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Bounty View: " + p.getName());
         ArrayList<ItemStack> items = PlayerUtil.getRewardItems(p);
@@ -294,7 +294,7 @@ public class GUI {
         statsSkullMeta.setDisplayName(ChatColor.GOLD.toString() + ChatColor.BOLD + "Your Stats:");
 
         statsDesc.add("Total Bounties Succeeded: " + StatsUtil.getBountyKills(p));
-        statsDesc.add("Total Bounties Failed: " + StatsUtil.getBountyFailed(p));
+        statsDesc.add("Total Bounties Failed: " + StatsUtil.getBountyFails(p));
         statsDesc.add("Total Bounties Survived: " + StatsUtil.getBountySurvived(p));
 
         statsSkullMeta.setLore(statsDesc);
@@ -328,7 +328,16 @@ public class GUI {
         ItemMeta placeCooldownMeta = placeCooldownButton.getItemMeta();
         placeCooldownMeta.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Bounty Place Cooldown");
 
-        placeCooldownDesc.add("Time remaining: " + PlayerUtil.getRemainingPlaceCooldown(p));
+        if(PlayerUtil.getRemainingShield(p).equals("You are off place cooldown")) {
+
+            placeCooldownDesc.add("You are off place cooldown");
+
+        }
+        else {
+
+            placeCooldownDesc.add("Time remaining: " + PlayerUtil.getRemainingPlaceCooldown(p));
+            
+        }
 
         placeCooldownMeta.setLore(placeCooldownDesc);
 

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-@SuppressWarnings("deprecated")
+@SuppressWarnings("deprecation")
 public class Listeners implements Listener {
 
     @EventHandler
@@ -144,7 +144,7 @@ public class Listeners implements Listener {
             e.setCancelled(true);
 
             ItemStack item = e.getCurrentItem();
-            if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "CONFIRM")) {
+            if(item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "CONFIRM")) {
 
                 String target = e.getView().getTitle().substring(17);
 
@@ -152,12 +152,12 @@ public class Listeners implements Listener {
                 cmd.onCommand((Player) e.getWhoClicked(), new String[]{"", target});
                 e.getWhoClicked().closeInventory();
 
-            } else if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "CANCEL")) {
+            } else if(item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "CANCEL")) {
 
                 Inventory viewInv = GUI.getListView("View");
                 e.getWhoClicked().openInventory(viewInv);
 
-            } else if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
+            } else if(item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "BACK")) {
 
                 Inventory activeInv = GUI.getListView("Active");
                 e.getWhoClicked().openInventory(activeInv);
