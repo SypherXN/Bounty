@@ -3,7 +3,6 @@ package com.sypherxn.smpbounty.util;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -332,6 +331,24 @@ public class PlayerUtil {
     public static void setCollectItems(OfflinePlayer p, ArrayList<ItemStack> data) {
 
         DataUtil.setDataItemList(p, "CollectItems", data);
+
+    }
+
+    /**
+     * Adds collect items
+     * @param p player to add data for
+     * @param data ArrayList to add items
+     */
+    public static void addCollectItems(OfflinePlayer p, ArrayList<ItemStack> data) {
+
+        ArrayList<ItemStack> items = PlayerUtil.getCollectItems(p);
+        for(int i = 0; i < data.size(); i++) {
+
+            items.add(data.get(i));
+
+        }
+
+        DataUtil.setDataItemList(p, "CollectItems", items);
 
     }
 

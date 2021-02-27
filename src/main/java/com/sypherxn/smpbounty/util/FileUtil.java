@@ -52,14 +52,16 @@ public class FileUtil {
             try {
 
                 pFile.createNewFile();
-                Bukkit.getConsoleSender().sendMessage(("File Create: " + pFile.getName()));
+                ChatUtil.sendConsoleLog("File Create: " + pFile.getName());
                 PlayerUtil.initializePlayer(p);
 
             } catch(Exception e) {
 
-                Bukkit.getConsoleSender().sendMessage("Error creating " + pFile.getName());
+                ChatUtil.sendConsoleLog("Error creating " + pFile.getName());
 
             }
+
+            DataUtil.setDataString(p, "Name", p.getName());
 
         }
 
@@ -123,11 +125,11 @@ public class FileUtil {
         try {
 
             config.save(pFile);
-            Bukkit.getConsoleSender().sendMessage(pFile.toString() + " Successfully Saved");
+            ChatUtil.sendConsoleLog(pFile.toString() + " Successfully Saved");
 
         } catch(IOException e) {
 
-            Bukkit.getConsoleSender().sendMessage(pFile.toString() + " Failed To Save");
+            ChatUtil.sendConsoleLog(pFile.toString() + " Failed To Save");
 
         }
 
