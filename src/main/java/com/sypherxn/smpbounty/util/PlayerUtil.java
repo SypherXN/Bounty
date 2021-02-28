@@ -369,8 +369,8 @@ public class PlayerUtil {
      */
     public static Boolean hasShield(OfflinePlayer p) {
 
-        if((DataUtil.getDataLong(p, "ShieldTime") / 1000) > DataUtil.shieldDuration) return true;
-        return false;
+        if(((DataUtil.getDataLong(p, "ShieldTime") / 1000) + DataUtil.shieldDuration) - (System.currentTimeMillis() / 1000) < 1) return false;
+        return true;
 
     }
 
@@ -422,8 +422,8 @@ public class PlayerUtil {
      */
     public static Boolean onPlaceCooldown(OfflinePlayer p) {
 
-        if((DataUtil.getDataLong(p, "PlaceTime") / 1000) > DataUtil.placeCooldown) return true;
-        return false;
+        if(((DataUtil.getDataLong(p, "PlaceTime") / 1000) + DataUtil.placeCooldown) - (System.currentTimeMillis() / 1000) < 1) return false;
+        return true;
 
     }
 
@@ -475,7 +475,7 @@ public class PlayerUtil {
      */
     public static Boolean inBountyCombat(OfflinePlayer p) {
 
-        if((DataUtil.getDataLong(p, "CombatTime") / 1000) > DataUtil.combatDuration) return false;
+        if(((DataUtil.getDataLong(p, "CombatTime") / 1000) + DataUtil.combatDuration) - (System.currentTimeMillis() / 1000) < 1) return false;
         return true;
 
     }
@@ -488,8 +488,8 @@ public class PlayerUtil {
     public static String getRemainingCombatTag(OfflinePlayer p) {
 
         String combatTag = "";
-        long placeTimeMillis = DataUtil.getDataLong(p, "CombatTime");
-        long cooldownSeconds = ((placeTimeMillis / 1000) + DataUtil.combatDuration) - (System.currentTimeMillis() / 1000);
+        long combatTimeMillis = DataUtil.getDataLong(p, "CombatTime");
+        long cooldownSeconds = ((combatTimeMillis / 1000) + DataUtil.combatDuration) - (System.currentTimeMillis() / 1000);
         long hours = cooldownSeconds / 3600;
         long minutes = (cooldownSeconds / 60) % 60;
         long seconds = cooldownSeconds % 60;
