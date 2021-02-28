@@ -11,7 +11,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -25,6 +27,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("deprecation")
@@ -267,7 +270,7 @@ public class Listeners implements Listener {
     }
 
     //Check if player death impacts bounties
-    @EventHandler
+    @EventHandler(priority= EventPriority.LOW)
     public void playerDeathCheck(PlayerDeathEvent e) {
 
         if(e.getEntity().getKiller() instanceof Player) {
@@ -284,6 +287,16 @@ public class Listeners implements Listener {
             if(deathHunterUUID.equals(killerUUID)) {
 
                 ChatUtil.sendBroadcast(killer.getName() + " has killed " + death.getName() + " and has collected their reward from " + bountyPlacer.getName());
+
+                e.setKeepInventory(true);
+
+                List<ItemStack> items = e.getDrops();
+
+                for(int i = 0; i < items.size(); i++) {
+
+                    items.set(i, null);
+
+                }
 
                 ArrayList<ItemStack> reward = PlayerUtil.getRewardItems(death);
                 PlayerUtil.addCollectItems(killer, reward);
@@ -324,6 +337,16 @@ public class Listeners implements Listener {
             if(deathHuntingUUID.equals(killerUUID)) {
 
                 ChatUtil.sendBroadcast(death.getName() + " has failed to complete " + bountyPlacer.getName() + "'s bounty on " + killer.getName());
+
+                e.setKeepInventory(true);
+
+                List<ItemStack> items = e.getDrops();
+
+                for(int i = 0; i < items.size(); i++) {
+
+                    items.set(i, null);
+
+                }
 
                 PlayerUtil.resetHunting(death);
                 StatsUtil.incrementBountyFails(death);

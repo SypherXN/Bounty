@@ -22,6 +22,8 @@ public final class SMPBounty extends JavaPlugin {
         commandManager.setup();
         getServer().getPluginManager().registerEvents(new Listeners(), this);
 
+        PlayerListUtil.readBullshit();
+
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
 
             PlayerListUtil.updateEntry(p.getUniqueId());
@@ -33,6 +35,7 @@ public final class SMPBounty extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        PlayerListUtil.saveBullshit();
 
     }
 
