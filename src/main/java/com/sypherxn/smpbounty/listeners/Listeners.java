@@ -79,6 +79,20 @@ public class Listeners implements Listener {
             OfflinePlayer target = Bukkit.getOfflinePlayer(PlayerListUtil.getUUID(targetName));
             UUID targetUUID = target.getUniqueId();
 
+            if(PlayerUtil.hasBountyPlacer(target)) {
+
+             ChatUtil.sendMessage(p, "Somebody has already placed a bounty on them!");
+             Inventory inv = p.getInventory();
+             for(int i = 0; i < items.size(); i++) {
+
+                 inv.addItem(items.get(i));
+
+             }
+
+             return;
+
+            }
+
             PlayerUtil.setRewardItems(target, items);
             PlayerUtil.setBountyPlacer(target, p.getUniqueId());
             ChatUtil.sendMessage(target, p.getName() + " has placed a bounty on you!");

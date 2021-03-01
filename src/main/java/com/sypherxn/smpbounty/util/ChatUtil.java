@@ -19,6 +19,8 @@ public class ChatUtil {
 
         Player player = Bukkit.getPlayer(p.getUniqueId());
 
+        if(player == null) return;
+
         if(player.isOnline()) {
 
             player.sendMessage(prefix + message);
